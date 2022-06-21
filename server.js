@@ -1,6 +1,5 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
-const { exit } = require('process');
 
 const db = mysql.createConnection(
     {
@@ -12,7 +11,7 @@ const db = mysql.createConnection(
     console.log(`Connected to the employeetrackerDB database.`)
   );
 
-function startApp(){
+function startPrompt(){
     inquirer.prompt([
         {
             type: "list",
@@ -50,9 +49,14 @@ function startApp(){
         }
     });
 }
-
-function viewAllDepartments()
-
+// Function set up to view All departments in database
+function viewAllDepartments() {
+    db.query("SELECT name AS Departments FROM departments;", function (err, res){
+        if (err) throw err
+        console.table(res);
+        startPrompt();
+    })
+}
 function viewAllEmployees()
 
 function viewAllRoles()
