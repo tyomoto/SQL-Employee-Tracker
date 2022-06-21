@@ -1,4 +1,4 @@
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const inquirer = require('inquirer');
 
 const db = mysql.createConnection(
@@ -51,7 +51,7 @@ function startOptions(){
 }
 // Function set up to view All departments in database
 function viewAllDepartments() {
-    db.query("SELECT name AS Departments FROM departments;", function (err, res){
+    db.query("SELECT department_name AS Departments FROM department;", function (err, res){
         if (err) throw err
         console.table(res);
         startOptions();
@@ -77,7 +77,26 @@ function viewAllRoles() {
     })
 }
 
-// function addDepartment()
+// Function to add new department
+function addDepartment() {
+    inquirer.prompt([
+        {
+            name: "name",
+            type: "input",
+            message: "Which department do you want to add?"
+        }
+    ]).then(function(res) {
+        db.query("INSERT INTO department SET ?",
+        {
+            department_name: res.name
+        }, function (err){
+            if (err) throw err
+            console.table(res);
+            startPrompt();
+        }
+        )
+    })
+}
 
 // function addRole()
 
