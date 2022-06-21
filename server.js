@@ -1,4 +1,4 @@
-const mysql = require('mysql');
+const mysql = require('mysql12');
 const inquirer = require('inquirer');
 
 const db = mysql.createConnection(
@@ -11,7 +11,7 @@ const db = mysql.createConnection(
     console.log(`Connected to the employeetrackerDB database.`)
   );
 
-function startPrompt(){
+function startOptions(){
     inquirer.prompt([
         {
             type: "list",
@@ -54,17 +54,35 @@ function viewAllDepartments() {
     db.query("SELECT name AS Departments FROM departments;", function (err, res){
         if (err) throw err
         console.table(res);
-        startPrompt();
+        startOptions();
     })
 }
-function viewAllEmployees()
+// Function set up to view all employees
+function viewAllEmployees() {
+    db.query("SELECT employee.first_name, employee.last_name, employee_role.title as Title, employee_role.salary as Salary, department.name as Department, CONCAT(e.first_name, ' ',e.last_name) AS Manager FROM employee INNER JOIN employee_role on employee_role.id = employee.role_id INNER JOIN department on department.id = employee_role.department_id left join employee e on employee.manager_id = e.id;",
+    function (err, res) {
+        if (err) throw err
+        console.table(res);
+        startOptions();
+    })
+}
 
-function viewAllRoles()
+// function set up to view all roles
+function viewAllRoles() {
+    db.query("SELECT title as Title, salary as Salary FROM employee_role",
+    function (err, res) {
+        if (err) throw err
+        console.table(res);
+        startOptions();
+    })
+}
 
-function addDepartment()
+// function addDepartment()
 
-function addRole()
+// function addRole()
 
-function addEmployee()
+// function addEmployee()
 
-function updateEmployeeRole()
+// function updateEmployeeRole()
+
+startOptions();
