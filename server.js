@@ -98,7 +98,7 @@ function addDepartment() {
     })
 }
 
-// function addRole()
+// Function to add a new role with title, salary and department id
 function addRole() {
     inquirer.prompt([
         {
@@ -130,7 +130,36 @@ function addRole() {
         )}
     )  
 }
-// function addEmployee()
+// Function to display the list of roles for the addEmployee function
+var roleArray = [];
+function pickRole() {
+    db.query("SELECT * FROM employee_role", 
+    function(err, res){
+        if (err) throw err
+        for (var i = 0; i <res.length; i++){
+            roleArray.push(res[i].title);
+        }
+    })
+    return roleArray;
+}
+// Function set up to add an employee 
+function addEmployee() {
+    inquirer.prompt([
+        {
+            name: "first_name",
+            type: "input",
+            message: "What is the first name of the employee you are adding?"
+        },
+        {
+            name: "last_name",
+            type: "input",
+            message: "What is the last name of the employee you are adding?"
+        }
+        {
+            name: "role_id"
+        }
+    ])
+}
 
 // function updateEmployeeRole()
 
