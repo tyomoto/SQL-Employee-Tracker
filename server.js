@@ -59,7 +59,7 @@ function viewAllDepartments() {
 }
 // Function set up to view all employees
 function viewAllEmployees() {
-    db.query("SELECT employee.first_name, employee.last_name, employee_role.title as Title, employee_role.salary as Salary, department.name as Department, CONCAT(e.first_name, ' ',e.last_name) AS Manager FROM employee INNER JOIN employee_role on employee_role.id = employee.role_id INNER JOIN department on department.id = employee_role.department_id left join employee e on employee.manager_id = e.id;",
+    db.query("SELECT employee.first_name, employee.last_name, employee_role.title as Title, employee_role.salary as Salary, department.department_name as Department, CONCAT(e.first_name, ' ',e.last_name) AS Manager FROM employee INNER JOIN employee_role on employee_role.id = employee.role_id INNER JOIN department on department.id = employee_role.department_id left join employee e on employee.manager_id = e.id;",
     function (err, res) {
         if (err) throw err
         console.table(res);
@@ -92,14 +92,44 @@ function addDepartment() {
         }, function (err){
             if (err) throw err
             console.table(res);
-            startPrompt();
+            startOptions();
         }
         )
     })
 }
 
 // function addRole()
-
+function addRole() {
+    inquirer.prompt([
+        {
+            name: "title",
+            type: "input",
+            message: "What is the role title you want to add?"
+        },
+        {
+            name: "salary",
+            type: "input",
+            message: "What is the salary for the role?"  
+        },
+        {
+            name: "department_id",
+            type: "input",
+            message: "What is the department id for this role?"
+        },
+    ]).then(function(res) {
+        db.query("INSERT INTO employee_role SET ?", 
+        {
+            title: res.title,
+            salary: res.salary,
+            department_id: res.department_id
+        }, function (err){
+            if (err) throw err;
+            console.table(res);
+            startOptions();
+            }
+        )}
+    )  
+}
 // function addEmployee()
 
 // function updateEmployeeRole()
