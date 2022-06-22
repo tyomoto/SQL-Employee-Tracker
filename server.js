@@ -154,11 +154,32 @@ function addEmployee() {
             name: "last_name",
             type: "input",
             message: "What is the last name of the employee you are adding?"
-        }
+        },
         {
-            name: "role_id"
-        }
-    ])
+            name: "manager_id",
+            type: "input",
+            message: "What is the employees' manager id? (Leave blank if unknown)"
+        },
+        {
+            name: "role_id",
+            type: "list",
+            message: "What is the role of the employee you are adding?",
+            choices: pickRole()
+        },
+    ]).then(function(res) {
+        var roleId = pickRole().indexOf(res.role_id) + 1
+        db.query("INSERT INTO employee SET ?",
+        {
+            first_name: res.first_name,
+            last_name: res.last_name,
+            manager_id: res.manager_id,
+            role_id: roleId
+        }, function(err){
+            if (err) throw err;
+            console.table(res);
+            startOptions();
+        })
+    })
 }
 
 // function updateEmployeeRole()
