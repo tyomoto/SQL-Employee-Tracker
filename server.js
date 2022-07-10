@@ -135,7 +135,7 @@ var roleArray = [];
 function pickRole() {
     db.query("SELECT * FROM employee_role", 
     function(err, res){
-        if (err) throw err
+        if (err) throw err;
         for (var i = 0; i <res.length; i++){
             roleArray.push(res[i].title);
         }
@@ -182,6 +182,45 @@ function addEmployee() {
     })
 }
 
-// function updateEmployeeRole()
+function updateEmployeeRole() {
+    db.query('SELECT * FROM employee', 
+    function (err, res){
+        if (err) throw err;
+        inquirer.prompt([
+            {
+                name: "employeeUpdate",
+                type: "list",
+                message: "Pick the employee whose role you wish to update.",
+                choices: res.map(employee => employee.first_name)
+            },
+        ])
+        .then(function(res){
+            const updateEmployee = (res.employeeUpdate)
+            db.query('SELECT * FROM employee_role', 
+            function (err, res){
+                if (err) throw err;
+                inquirer.prompt([
+                    {
+                        name: "role_id",
+                        type: "list",
+                        message: "Select the new role of the employee.",
+                        choices: res.map(employee_role => employee_role.title)
+                    },
+                ])
+                .then(function(answer){
+                    const rolePicked = res.find(employee_role => employee_role.title === answer.role_id)
+                    db.query("UPDATE employee SET ? WHERE first_name = " + "'" + updateEmployee + "'", {
+                        role_id: "" + rolePicked.id + "",
+                    },
+                    function(err){
+                        if (err) throw err;
+                        console.log("Updated " + updateEmployee + "'s role to " + answer.role_id);
+                        startOptions();
+                    })
+                })
+            })
+        })
+    })
+}
 
 startOptions();
